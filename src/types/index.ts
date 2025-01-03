@@ -47,21 +47,13 @@ export type TProductBasketInfo = Pick<IProduct,  'title' | 'price' >;
 export type TIUserPaymentAndAdress = Pick<IUser,  'payment' | 'adress' >;
 export type TIUserEmailAndPhone = Pick<IUser,  'email' | 'phone' >;
 
-interface IBasketModel {
-    //что такое мэп
-    items: Map<string, number>;
-    total: number;
-    add(id: string): void;
-    remove(id: string): void;
-    clear(): void;
-    getItems(): TProductBasketInfo[];
-}
 
 
 
 
 
-interface IOrder {
+
+export interface IOrder {
     id: string;
     total: number;
 }

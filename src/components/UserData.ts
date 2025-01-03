@@ -1,4 +1,4 @@
-import {  IUser, TIUserEmailAndPhone, TIUserPaymentAndAdress } from "../../types";
+import {  IUser, TIUserEmailAndPhone, TIUserPaymentAndAdress } from "../types";
 
 export class UserData {
 

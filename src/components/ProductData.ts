@@ -1,4 +1,4 @@
-import { IProduct } from "../../types";
+import { IProduct } from "../types";
 
 export class ProductData {
     protected items: IProduct[] = [];
@@ -19,7 +19,7 @@ export class ProductData {
  
 checkProduct(id: string) {
     const item = this.getProduct(id);
-    item.completed = !item.completed;
+
 }
 }
 

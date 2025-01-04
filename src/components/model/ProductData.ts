@@ -1,8 +1,9 @@
-import { IProduct } from "../types";
+import { IProduct } from "../../types";
+import { IEvents } from "../base/events";
 
 export class ProductData {
     protected items: IProduct[] = [];
-    constructor() {}
+    constructor( protected events: IEvents) {}
     
     preview: string | null;
     setList(items: IProduct[]): void {

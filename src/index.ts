@@ -1,11 +1,12 @@
-import { ProductData } from './components/ProductData';
+import { ProductData } from './components/model/ProductData';
 import './scss/styles.scss';
 import { UserData } from './components/UserData';
-import { BasketData } from './components/BasketData';
+import { BasketData } from './components/model/BasketData';
 import { ProductDataApi } from './components/ProductDataApi';
 import { API_URL } from './utils/constants';
+import { EventEmitter } from './components/base/events';
 
-
+const events = new EventEmitter();
 const productData = new ProductData();
 const userData = new UserData();
 const basketData = new BasketData();
@@ -41,3 +42,6 @@ productListApi.getProductListData()
     .catch();
         {}
     ;
+
+
+events.on('basket:changed', () => {

@@ -1,22 +1,35 @@
-import { ensureElement } from "../utils/utils";
-import { Component } from "./base/Component";
 
-export class CardCatalogUI extends Component {
+import { IProduct } from "../../types";
+import { ensureElement} from "../../utils/utils";
+import { IEvents } from "../base/events";
+import { Card } from "./CardUI";
 
-    protected cardTitle: HTMLElement;
-    protected cardImage: HTMLImageElement;
-    protected cardCategory: HTMLElement;
-    protected cardPrice: HTMLElement;
-    constructor(container: HTMLElement) {
-        super(container);
-        this.cardTitle = ensureElement('.card__title', this.container);
-        this.cardImage = ensureElement('.card__image', this.container) as HTMLImageElement;
-        this.cardCategory = ensureElement('.card__category', this.container);
-        this.cardPrice = ensureElement('.card__price', this.container);
+
+
+export class CardCatalogUI extends Card {
+    _item: IProduct;
+
+    constructor(container: HTMLElement, protected events: IEvents) {
+        super(container, events);
+
+        this._image = ensureElement('.card__image', this.container) as HTMLImageElement;
+        this._category = ensureElement('.card__category', this.container);
+       
+
+        this.container.addEventListener('click', () => {
+            this.events.emit('cardCatalog:clicked', this._item);
+        });
     }
 
-set title(value: string) {
-    this.setText(this.cardTitle, value);
-}
+    render(card: IProduct): HTMLElement {
+
+        this.setImage(this._image, card.image);
+        this._category.textContent = card.category;
+        this._item = card;
+
+
+        return super.render(card);
+    }
+
 
 }

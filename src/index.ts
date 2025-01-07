@@ -1,47 +1,112 @@
 import { ProductData } from './components/model/ProductData';
 import './scss/styles.scss';
-import { UserData } from './components/UserData';
+import { OrderData } from './components/model/OrderData';
 import { BasketData } from './components/model/BasketData';
-import { ProductDataApi } from './components/ProductDataApi';
-import { API_URL } from './utils/constants';
+import { OrderDataApi, ProductDataApi } from './components/ProductDataApi';
+import { API_URL, CDN_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
+import { cloneTemplate, ensureElement } from './utils/utils';
+import { Page } from './components/view/Page';
+import { CardCatalogUI } from './components/view/CardCatalogUI';
+import { Modal } from './components/view/Modal';
+import { BasketUI } from './components/view/BasketUI';
+import { CardPreviewUI } from './components/view/CardPreviewUI';
+import { IProduct } from './types';
+import { Api } from './components/base/api';
 
 const events = new EventEmitter();
-const productData = new ProductData();
-const userData = new UserData();
-const basketData = new BasketData();
-
-productData.setList([
-    {
-        id: '1', title: 'Product 1',
-        description: '',
-        image: '',
-        category: '',
-        price: 0
-    },
-    {
-        id: '2', title: 'Product 2',
-        description: '',
-        image: '',
-        category: '',
-        price: 0
-    }
-]);
 
 
+// Все шаблоны
+const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
+const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 
-const productListApi = new ProductDataApi(API_URL);
+const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
+const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success');
+
+
+//Модели данных
+const productData = new ProductData(events);
+const orderData = new OrderData(events);
+const basketData = new BasketData(events);
+
+// Глобальные контейнеры
+const page = new Page(ensureElement('.page'), events);
+const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+
+
+//Переиспользуемые части интерфейса
+//const basketComponent = new BasketUI(cloneTemplate(templates.basketTemplate), events)
+//const cardPreview = new CardPreviewUI(cloneTemplate(templates.cardPreviewTemplate), events);
+//const orderForm = new OrderForm(cloneTemplate(templates.orderTemplate), events);
+//const contactsForm = new ContactsForm(cloneTemplate(templates.contactsTemplate), events)
+//const success = new Success(cloneTemplate(templates.successTemplate), events)
+
+
+//Получение списка товаров
+const productListApi = new ProductDataApi(API_URL, {}, CDN_URL);
+const orderApi = new OrderDataApi(API_URL);
+
+
 productListApi.getProductListData()
     .then((data) => {
         if (data) {
-            console.log(data);
+            console.log('Получен список продуктов: ', data.items);
+            productData.items = data.items;
+
+
         } else {
-            console.error('No data was received');
+            console.error('Данные не получены');
         }
     })
-    .catch();
-        {}
-    ;
+    .catch((err) => {
+        console.error('Ошибка: ', err);
+    });
 
 
-events.on('basket:changed', () => {
+//Рендер каталога товаров
+events.on(`model:products:loaded`, () => {
+    const elements = productData.items.map(item => {
+        const card = new CardCatalogUI(cloneTemplate(cardCatalogTemplate), events);
+        return card.render(item);
+    })
+
+    page.catalog = elements;
+    // page.render();
+
+});
+
+
+
+//Выбор товара в каталоге
+events.on(`cardCatalog:clicked`, (item: IProduct) => {
+    productData.selected = item;
+    console.log('Выбран товар: ', item);
+});
+
+
+
+//Изменен открытый выбранный лот
+events.on('model:product:selected', (item: IProduct) => {
+    const card = new CardPreviewUI(cloneTemplate(cardPreviewTemplate), events);
+    modal.content = card.render(item);
+    modal.render()
+});
+
+
+
+
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+    page.locked = true;
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+    page.locked = false;
+});
+

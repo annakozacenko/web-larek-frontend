@@ -11,28 +11,30 @@ export interface IProduct {
 }
 
 
-export interface IUser {
-    payment: string;
-    adress: string;
+export interface IOrder {
+    payment: PaymentMethod;
     email: string;
     phone: string;
-}
+    address: string;
+    total: number;
+    items: string[];
+  }
 
 
-type PaymentMethod = 'online' | 'offline'
+export type PaymentMethod = 'online' | 'offline'
 type ProductCategory = 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил'
 
 
 
 
-interface IUserData {
-    user: IUser;
-    setUser(user: IUser): void;
-    getUser(): IUser;
+interface IOrderData {
+    user: IOrder;
+    setUser(user: IOrder): void;
+    getUser(): IOrder;
     setPaymentMethod(payment: string): void;
     getPaymentMethod(): string;
-    setAdress(adress: string): void;
-    getAdress(): string;
+    setaddress(address: string): void;
+    getaddress(): string;
     setEmail(email: string): void;
     getEmail(): string;
     setTelephone(phone: string): void;
@@ -44,21 +46,17 @@ export type TProductInfo = Pick<IProduct,  'title' | 'price' | 'category' | 'des
 export type TProductBasketInfo = Pick<IProduct,  'title' | 'price' >;
 
 
-export type TIUserPaymentAndAdress = Pick<IUser,  'payment' | 'adress' >;
-export type TIUserEmailAndPhone = Pick<IUser,  'email' | 'phone' >;
+export type TIOrderPaymentAndaddress = Pick<IOrder,  'payment' | 'address' >;
+export type TIOrderEmailAndPhone = Pick<IOrder,  'email' | 'phone' >;
 
 
 
+export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 
-
-
-
-export interface IOrder {
-    id: string;
-    total: number;
+export interface IApi {
+  get<T>(url: string): Promise<T>;
+  post<T>(orl: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
-
-
 
 
 

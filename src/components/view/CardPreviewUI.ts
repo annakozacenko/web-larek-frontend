@@ -1,33 +1,38 @@
 import { IProduct } from "../../types";
 import { ensureElement } from "../../utils/utils";
+import { EventEmitter, IEvents } from "../base/events";
+import { Card } from "./CardUI";
 import { Component } from "./Component";
 
-export class CardPreviewUI extends Component<IProduct> {
+export class CardPreviewUI extends Card {
 
-    protected cardTitle: HTMLElement;
-    protected cardImage: HTMLImageElement;
-    protected cardCategory: HTMLElement;
-    protected cardPrice: HTMLElement;
-    protected cardButton: HTMLButtonElement;
-    protected cardDescription: HTMLElement;
-    constructor(container: HTMLElement) {
-        super(container);
-        this.cardTitle = ensureElement('.card__title', this.container);
-        this.cardImage = ensureElement('.card__image', this.container) as HTMLImageElement;
-        this.cardCategory = ensureElement('.card__category', this.container);
-        this.cardPrice = ensureElement('.card__price', this.container);
-        this.cardButton = ensureElement('.card__button', this.container) as HTMLButtonElement;
-        this.cardDescription = ensureElement('.card__text', this.container);
+    constructor(container: HTMLElement,protected events: IEvents) {
+        super(container, events);
+
+        this._image = ensureElement('.card__image', this.container) as HTMLImageElement;
+        this._category = ensureElement('.card__category', this.container);
+        this._button= ensureElement('.card__button', this.container) as HTMLButtonElement;
+        this._description = ensureElement('.card__text', this.container);
+
+        this._button.addEventListener('click', () => {
+            this.events.emit('cardPreviewButton:clicked');
+        });
     }
 
 toggleStatus(value: boolean) {
  const status = value ? 'Убрать из корзины' : 'Добавить';
- this.cardButton.textContent = status;
+ this._button.textContent = status;
  //ПР9-возможно надо будет добавить добавлление/удаление класса
 }
 
-render(data: Partial<IProduct>): HTMLElement {
-    Object.assign(this as object, data);
-    return this.container;
+render(card: IProduct): HTMLElement {
+
+    this.setImage(this._image, card.image);
+    this._category.textContent = card.category;
+    this._description.textContent = card.description;
+
+
+
+    return super.render(card);
 }
 }

@@ -1,4 +1,4 @@
-export abstract class Component<T> {
+export abstract class Component {
     protected constructor(protected readonly container: HTMLElement) {
 
     }
@@ -28,7 +28,7 @@ export abstract class Component<T> {
 
     }
 
-    render(data?: Partial<T>): HTMLElement {
+    render(data?: object): HTMLElement {
         Object.assign(this as object, data ?? {});
         return this.container
     }

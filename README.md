@@ -184,9 +184,9 @@ interface IBasketModel {
 *   `total: number`: Сумма товаров, по умолчанию 0.
 *   `amount: number`: Количество товаров, по умолчанию 0.
 *   `constructor(events: IEvents)`: Конструктор принимает инстанс `IEvents` для создания событий.
-*   `addProduct(product: IProduct)`: Добавляет товар. Вызывает событие 'basket:changed'.
-*   `removeProduct(id: string)`: Удаляет товар. Вызывает событие 'basket:changed'.
-*   `clearBasket()`: Очищает корзину. Вызывает событие 'basket:changed'.
+*   `addProduct(product: IProduct)`: Добавляет товар. Вызывает событие 'model:basket:changed'.
+*   `removeProduct(id: string)`: Удаляет товар. Вызывает событие 'model:basket:changed'.
+*   `clearBasket()`: Очищает корзину. Вызывает событие 'model:basket:changed'.
 *   `getItems(): IProduct[]`: Возвращает список товаров.
 *   `getTotal(): number`: Возвращает сумму товаров.
 *   `getAmount(): number`: Возвращает количество товаров.

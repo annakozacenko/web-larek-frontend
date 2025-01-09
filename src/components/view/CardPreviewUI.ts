@@ -5,6 +5,7 @@ import { Card } from "./CardUI";
 import { Component } from "./Component";
 
 export class CardPreviewUI extends Card {
+    _item: IProduct;
 
     constructor(container: HTMLElement,protected events: IEvents) {
         super(container, events);
@@ -15,7 +16,7 @@ export class CardPreviewUI extends Card {
         this._description = ensureElement('.card__text', this.container);
 
         this._button.addEventListener('click', () => {
-            this.events.emit('cardPreviewButton:clicked');
+            this.events.emit('cardPreviewButton:clicked', this);
         });
     }
 

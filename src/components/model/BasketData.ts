@@ -14,14 +14,17 @@ export class BasketData {
     addProduct(product: IProduct) {
         this.items.push(product);
         this.events.emit('basket:product-added');
+        this.events.emit('model:basket:changed');
     };
     removeProduct(id: string) {
         this.items = this.items.filter((item) => item.id !== id);
         this.events.emit('basket:product-removed');
+        this.events.emit('model:basket:changed');
     };
     clearBasket() {
         this.items = [];
         this.events.emit('basket:cleared');
+        this.events.emit('model:basket:changed');
     };
     get Items(): IProduct[] {
         return this.items;

@@ -21,7 +21,7 @@ export class BasketUI extends Component {
 
         if (this._button) {
             this._button.addEventListener('click', () => {
-                events.emit('basket:confirmed');
+                events.emit('ui:basket:confirmed');
             });
         }
         this.items = [];

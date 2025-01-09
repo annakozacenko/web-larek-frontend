@@ -26,8 +26,8 @@ export class ProductDataApi extends Api {
 
 export class OrderDataApi extends Api {
 
-    setOrder(data: IOrder): Promise<IOrder> {
-        return this.post<IOrder>('/order', data);
+    setOrder(data: IOrder): Promise<{id: string, total:number}> {
+        return this.post<{id: string, total:number}>('/order', data);
     }
 
 }

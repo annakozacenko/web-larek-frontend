@@ -2,7 +2,7 @@ import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/events";
 import { Component } from "./Component";
 
-export class Form extends Component {
+export class FormUI extends Component {
     protected _button: HTMLButtonElement;
     protected _errors: HTMLElement;
     protected _inputs: HTMLInputElement[];
@@ -34,6 +34,4 @@ export class Form extends Component {
     set errors(value: string) {
         this.setText(this._errors, value);
     }
-
-
 }

@@ -17,7 +17,7 @@ import { Card } from './components/view/CardUI';
 import { CardBasketUI } from './components/view/CardBasketUI';
 import { OrderFormUI } from './components/view/OrderFormUI';
 import { ContactsFormUI } from './components/view/ContactsFormUI';
-import {  SuccessUI } from './components/view/SuccessUI';
+import { SuccessUI } from './components/view/SuccessUI';
 
 const events = new EventEmitter();
 
@@ -51,11 +51,12 @@ const contactsForm = new ContactsFormUI(cloneTemplate(contactsTemplate), events)
 const successComponent = new SuccessUI(cloneTemplate(successTemplate), events)
 
 
-//Получение списка товаров
+
 const productListApi = new ProductDataApi(API_URL, {}, CDN_URL);
 const orderApi = new OrderDataApi(API_URL);
 
 
+//Получение списка товаров и помещение их в модель
 productListApi.getProductListData()
     .then((data) => {
         if (data) {
@@ -85,12 +86,39 @@ events.on(`model:products:loaded`, () => {
 });
 
 
+//Изменения в модели корзины - Изменение компонентов корзины и счетчика
+events.on('model:basket:changed', () => {
+    page.counter = basketData.Amount;
+
+
+    const cardsInBasket = basketData.Items.map(item => {
+        const cardInBasket = new CardBasketUI(cloneTemplate(cardBasketTemplate), events);
+        return cardInBasket.render(item);
+    })
+    basketComponent.items = cardsInBasket;
+    basketComponent.total = basketData.Total;
+
+    if (basketData.Total === 0) {
+        basketComponent.toggleButton(false);
+        console.log('Корзина пуста');
+    } else {
+        basketComponent.toggleButton(true);
+    }
+
+
+
+ //   basketComponent.render();
+ //   page.render();
+});
+
+
+
 
 //Выбор товара в каталоге, сохранение в модели, рендер модалки карточки
 events.on(`cardCatalog:clicked`, (item: IProduct) => {
     productData.selected = item;
     console.log('Выбран товар: ', item);
-   // const card = new CardPreviewUI(cloneTemplate(cardPreviewTemplate), events);
+    // const card = new CardPreviewUI(cloneTemplate(cardPreviewTemplate), events);
     const isInBasket = basketData.isProductInBasket(item);
     cardPreview.toggleStatus(isInBasket);
     modal.content = cardPreview.render(item);
@@ -98,11 +126,6 @@ events.on(`cardCatalog:clicked`, (item: IProduct) => {
 });
 
 
-
-//Изменен открытый выбранный лот-похоже не нужен
-events.on('model:product:selected', (item: IProduct) => {
-
-});
 
 
 
@@ -123,35 +146,13 @@ events.on('cardPreviewButton:clicked', (element: CardPreviewUI) => {
 
 
 
-//Изменение счетчика в корзине и подготовка корзины к рендеру
-events.on('model:basket:changed', () => {
-    page.counter = basketData.Amount;
-    basketComponent.render();
-    console.log(basketComponent)
-    page.render();
 
-    const cardsInBasket = basketData.Items.map(item => {
-        const cardInBasket = new CardBasketUI(cloneTemplate(cardBasketTemplate), events);
-        return cardInBasket.render(item);
-    })
-    basketComponent.items = cardsInBasket;
-    console.log('Товары хтмл в корзине ', basketComponent);
-
-});
 
 
 
 
 //Открытие корзины
 events.on('basket:opened', () => {
-    basketComponent.items;
-    basketComponent.total = basketData.Total;
-    if (basketData.Total === 0) {
-        basketComponent.toggleButton(false);
-        console.log('Корзина пуста');
-    } else {
-        basketComponent.toggleButton(true);
-    }
     modal.content = basketComponent.render();
     modal.render();
 });
@@ -159,11 +160,11 @@ events.on('basket:opened', () => {
 //Удаление товара из корзины
 events.on('cardDeleteButton:clicked', (element: IProduct) => {
     basketData.removeProduct(element.id);
-    basketComponent.total = basketData.Total;
-    if (basketData.Total === 0) {
-        basketComponent.toggleButton(false);
-        console.log('Корзина пуста');
-    }
+    // basketComponent.total = basketData.Total;
+    // if (basketData.Total === 0) {
+    //     basketComponent.toggleButton(false);
+    //     console.log('Корзина пуста');
+    // }
     console.log('Товар удален из корзины');
     basketComponent.render();
 });
@@ -178,7 +179,7 @@ events.on('ui:basket:confirmed', () => {
 });
 
 //Отправка заказа после заполнение формы заказа
-events.on('ui:orderForm:submit', (data:TIOrderPaymentAndaddress) => {
+events.on('ui:orderForm:submit', (data: TIOrderPaymentAndaddress) => {
     console.log('Отправка заказа: ', data);
     orderData.UserPaymentAndaddress = data;
 
@@ -187,33 +188,30 @@ events.on('ui:orderForm:submit', (data:TIOrderPaymentAndaddress) => {
 });
 
 //Отправка заказа после заполнение формы контактов
-events.on('ui:contactsForm:submit', (data:TIOrderEmailAndPhone) => {
+events.on('ui:contactsForm:submit', (data: TIOrderEmailAndPhone) => {
     orderData.UserEmailAndPhone = data;
     console.log('Отправка заказа: ', orderData.OrderInfo);
-orderApi.setOrder(orderData.OrderInfo)
-.then((data) => {
-    modal.content = successComponent.render({ value: data.total });
-    console.log('Заказ отправлен: ', data);
-    events.emit('шш');
-})
-    .catch((err) => {
-        console.error('Ошибка: ', err);
-    });
+    orderApi.setOrder(orderData.OrderInfo)
+        .then((data) => {
+            modal.content = successComponent.render({ value: data.total });
+            console.log('Заказ отправлен: ', data);
+
+            basketData.clearBasket();
+            console.log('Товары в корзине ', basketData.Items);
+            basketComponent.total = basketData.Total;
+            console.log('Корзина очищена');
+            basketComponent.render();
+            page.render();
+        })
+        .catch((err) => {
+            console.error('Ошибка: ', err);
+        });
 
     modal.render();
 });
 
 
 
-//Оформление заказа
-events.on('шш', () => {
-  //  modal.close();
-    basketData.clearBasket();
-    basketComponent.total = basketData.Total;
-    console.log('Корзина очищена');
-    basketComponent.render();
-    page.render();
-});
 
 
 events.on('ui:sucсessButton:pressed', () => {

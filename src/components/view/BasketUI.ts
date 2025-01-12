@@ -31,7 +31,9 @@ export class BasketUI extends Component {
     set items(items: HTMLElement[]) {
         if (items.length) {
             this._list.replaceChildren(...items);
-        } 
+        } else {
+            this._list.innerHTML = '';
+        }
     }
     set total(total: number) {
         this.setText(this._total, formatNumber(total) + ' синапсов');

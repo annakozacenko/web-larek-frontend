@@ -8,7 +8,7 @@ export class OrderData {
     protected _email: string;
     protected _phone: string;
 
-    protected _total: number;
+    protected _total: number  = 0;
     protected _items: string[] = [];
 
 
@@ -19,8 +19,8 @@ export class OrderData {
 
 
     set OrderItemsAndTotal(items: IProduct[]) {
-        this._items = items.map((item) => item.id);
-        this._total = items.reduce((acc, item) => acc + item.price, 0);
+        this._items = items.filter((item) => item.price > 0).map((item) => item.id);
+        this._total = items.filter((item) => item.price > 0).reduce((acc, item) => acc + item.price, 0);
         this.events.emit('order-ItemsAndTotal:changed')
     }
 

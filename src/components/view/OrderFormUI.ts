@@ -20,6 +20,8 @@ export class OrderFormUI extends FormUI {
         this._addressInput = ensureElement<HTMLInputElement>('.order__field input', this.container);
         this._submitButton = ensureElement<HTMLButtonElement>('.order__button', this.container);
 
+
+
         this._paymentButtonCard.addEventListener('click', (evt) => this.onPaymentButtonClick(evt, 'online', this._paymentButtonCard, this._paymentButtonCash));
         this._paymentButtonCash.addEventListener('click', (evt) => this.onPaymentButtonClick(evt, 'offline', this._paymentButtonCash, this._paymentButtonCard));
         this._addressInput.addEventListener('input', this.onInputChange);
@@ -78,17 +80,10 @@ export class OrderFormUI extends FormUI {
      * Валидация формы.
      */
     validate(): boolean {
+        this._addressInput.required = true;
         const errors: string[] = [];
         const isAddressValid = this._addressInput.value.trim() !== '';
         const isPaymentTypeValid = this._paymentType !== '';
-
-        // if (!isAddressValid) {
-        //     errors.push('Введите адрес доставки.');
-        // }
-
-        // if (!isPaymentTypeValid) {
-        //     errors.push('Выберите способ оплаты.');
-        // }
 
         if (!isAddressValid && !isPaymentTypeValid) {
             this.setValidationErrors('Введите адрес доставки и выберите способ оплаты.');

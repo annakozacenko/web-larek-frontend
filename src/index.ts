@@ -146,6 +146,12 @@ events.on('model:basket:changed', () => {
 events.on('basket:opened', () => {
     basketComponent.items;
     basketComponent.total = basketData.Total;
+    if (basketData.Total === 0) {
+        basketComponent.toggleButton(false);
+        console.log('Корзина пуста');
+    } else {
+        basketComponent.toggleButton(true);
+    }
     modal.content = basketComponent.render();
     modal.render();
 });
@@ -154,6 +160,10 @@ events.on('basket:opened', () => {
 events.on('cardDeleteButton:clicked', (element: IProduct) => {
     basketData.removeProduct(element.id);
     basketComponent.total = basketData.Total;
+    if (basketData.Total === 0) {
+        basketComponent.toggleButton(false);
+        console.log('Корзина пуста');
+    }
     console.log('Товар удален из корзины');
     basketComponent.render();
 });

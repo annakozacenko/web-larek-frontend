@@ -6,7 +6,7 @@ export class ProductDataApi extends Api {
 
     constructor(baseUrl: string, options: RequestInit = {}, cdn: string) {
         super(baseUrl, options);
-        this.cdn = cdn; // Устанавливаем ссылку CDN
+        this.cdn = cdn; 
     }
     getProductListData(): Promise<{ total: number, items: IProduct[] }> {
         return this.get<{ total: number, items: IProduct[] }>('/product')
@@ -14,7 +14,7 @@ export class ProductDataApi extends Api {
                 ...data,
                 items: data.items.map((item) => ({
                     ...item,
-                    image: this.cdn + item.image // Добавляем ссылку CDN перед изображением
+                    image: this.cdn + item.image 
                 }))
             }));
     }

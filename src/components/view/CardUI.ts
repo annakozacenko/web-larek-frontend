@@ -13,10 +13,10 @@ export class Card extends Component {
     protected _description?: HTMLElement;
 
 
-    constructor( container: HTMLElement, protected events:IEvents) {
+    constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
         this._title = ensureElement('.card__title', this.container);
-        this._price = ensureElement('.card__price', this.container);        
+        this._price = ensureElement('.card__price', this.container);
     }
 
 

@@ -1,6 +1,6 @@
 
 import { IProduct } from "../../types";
-import { ensureElement} from "../../utils/utils";
+import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/events";
 import { Card } from "./CardUI";
 
@@ -14,10 +14,10 @@ export class CardCatalogUI extends Card {
 
         this._image = ensureElement('.card__image', this.container) as HTMLImageElement;
         this._category = ensureElement('.card__category', this.container);
-       
+
 
         this.container.addEventListener('click', () => {
-            this.events.emit('cardCatalog:clicked', this._item);
+            this.events.emit('ui:cardCatalog:clicked', this._item);
         });
     }
 

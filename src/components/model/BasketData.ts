@@ -29,7 +29,7 @@ export class BasketData {
     get Items(): IProduct[] {
         return this.items;
     };
-    
+
     get Total(): number {
         return this.items.reduce((acc, item) => acc + item.price, 0);
     };
@@ -39,6 +39,6 @@ export class BasketData {
 
     isProductInBasket(product: IProduct): boolean {
         return this.items.some(item => item.id === product.id);
-      }
-    
+    }
+
 }

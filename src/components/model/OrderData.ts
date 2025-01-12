@@ -8,7 +8,7 @@ export class OrderData {
     protected _email: string;
     protected _phone: string;
 
-    protected _total: number  = 0;
+    protected _total: number = 0;
     protected _items: string[] = [];
 
 
@@ -23,12 +23,6 @@ export class OrderData {
         this._total = items.filter((item) => item.price > 0).reduce((acc, item) => acc + item.price, 0);
         this.events.emit('order-ItemsAndTotal:changed')
     }
-
-
-    // get OrderItemsAndTotal(): [string[], number] {
-    //     return [this._items, this._total];
-    // }
-
 
 
     set UserPaymentAndaddress(data: TIOrderPaymentAndaddress) {
@@ -73,31 +67,4 @@ export class OrderData {
 
 
 
-    //проверить что требуется по валидации
-    checkAddress(): boolean {
-        return !!this._address;
-    }
-    checkPayment(): boolean {
-        return !!this._payment
-    }
-    checkEmail(): boolean {
-        return !!this._email
-    }
-    checkPhone(): boolean {
-        return !!this._phone
-    }
-
-
-//как пользоваться?
-    validateOrder(): boolean {
-        const errors: Record<string, string> = {};
-        if (!this.checkAddress()) errors.address = 'Адрес не указан';
-        if (!this.checkPayment()) errors.payment = 'Способ оплаты не выбран';
-        this.events.emit('order:errors', errors);
-        return Object.keys(errors).length === 0;
-      }
-
-    isOrderReady(): boolean {
-        return this.checkAddress() && this.checkPayment() && this.checkEmail() && this.checkPhone();
-    }
 }

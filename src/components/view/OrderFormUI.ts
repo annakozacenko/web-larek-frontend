@@ -9,7 +9,7 @@ export class OrderFormUI extends FormUI {
     protected _paymentType: string = '';
     protected _submitButton: HTMLButtonElement;
     protected _errorField: HTMLElement;
-    
+
 
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container, events);
@@ -20,8 +20,6 @@ export class OrderFormUI extends FormUI {
         this._addressInput = ensureElement<HTMLInputElement>('.order__field input', this.container);
         this._submitButton = ensureElement<HTMLButtonElement>('.order__button', this.container);
 
- 
-     //   this._addressInput.required = true;
 
         this._paymentButtonCard.addEventListener('click', (evt) =>
             this.onPaymentButtonClick(evt, 'online', this._paymentButtonCard, this._paymentButtonCash)
@@ -39,9 +37,8 @@ export class OrderFormUI extends FormUI {
         this.updateSubmitButtonState();
     }
 
-    /**
-     * Обработчик клика по кнопке выбора способа оплаты.
-     */
+
+
     protected onPaymentButtonClick(evt: Event, paymentType: string, clickedButton: HTMLButtonElement, otherButton: HTMLButtonElement) {
         evt.preventDefault();
 
@@ -52,9 +49,7 @@ export class OrderFormUI extends FormUI {
         this.updateSubmitButtonState();
     }
 
-    /**
-     * Проверка валидности адреса.
-     */
+
     protected checkAddressValidity() {
         const isAddressValid = this._addressInput.value.trim() !== '';
 
@@ -71,9 +66,7 @@ export class OrderFormUI extends FormUI {
         this.updateSubmitButtonState();
     }
 
-    /**
-     * Проверка валидности способа оплаты.
-     */
+
     protected checkPaymentValidity() {
         const isPaymentValid = this._paymentType !== '';
 
@@ -84,9 +77,7 @@ export class OrderFormUI extends FormUI {
         }
     }
 
-    /**
-     * Обработчик отправки формы.
-     */
+
     protected onSubmit = (evt: Event) => {
         evt.preventDefault();
         if (this.validate()) {
@@ -99,9 +90,7 @@ export class OrderFormUI extends FormUI {
         }
     }
 
-    /**
-     * Проверка валидности формы.
-     */
+
     validate(): boolean {
         const isAddressValid = this._addressInput.value.trim() !== '';
         const isPaymentTypeValid = this._paymentType !== '';
@@ -109,41 +98,30 @@ export class OrderFormUI extends FormUI {
         return isAddressValid && isPaymentTypeValid;
     }
 
-    /**
-     * Отображение ошибки ввода адреса.
-     */
+
     protected showInputError(input: HTMLInputElement, errorMessage: string) {
         this._errorField.textContent = errorMessage;
         input.classList.add('input-error');
     }
 
-    /**
-     * Скрытие ошибки ввода адреса.
-     */
+
     protected hideInputError(input: HTMLInputElement) {
         this._errorField.textContent = '';
         input.classList.remove('input-error');
     }
 
-    /**
-     * Отображение ошибки выбора способа оплаты.
-     */
+
     protected showPaymentError(errorMessage: string) {
         this._errorField.textContent = errorMessage;
- 
+
     }
 
-    /**
-     * Скрытие ошибки выбора способа оплаты.
-     */
+
     protected hidePaymentError() {
         this._errorField.textContent = '';
- 
+
     }
 
-    /**
-     * Переключение активного состояния кнопок оплаты.
-     */
     protected switchButtons(activeButton: HTMLButtonElement, inactiveButton: HTMLButtonElement) {
         if (this._paymentType) {
             activeButton.classList.add('button_alt-active');
@@ -153,17 +131,13 @@ export class OrderFormUI extends FormUI {
         }
     }
 
-    /**
-     * Обновление состояния кнопки отправки.
-     */
+
     updateSubmitButtonState() {
         const isFormValid = this.validate();
         this._submitButton.disabled = !isFormValid;
     }
 
-    /**
-     * Сброс состояния формы.
-     */
+
     reset(): void {
         this._paymentType = '';
         this._addressInput.value = '';

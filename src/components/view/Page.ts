@@ -3,16 +3,16 @@ import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/events";
 
 export class Page extends Component {
-protected _basketButton: HTMLButtonElement;
-protected _counter: HTMLElement;
-protected _catalog: HTMLElement;
-protected _wrapper: HTMLElement;
+    protected _basketButton: HTMLButtonElement;
+    protected _counter: HTMLElement;
+    protected _catalog: HTMLElement;
+    protected _wrapper: HTMLElement;
 
 
-    constructor(container: HTMLElement, protected events:IEvents) {
+    constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
 
-    
+
         this._basketButton = ensureElement<HTMLButtonElement>('.header__basket', this.container)
         this._counter = ensureElement<HTMLSpanElement>('.header__basket-counter', this.container)
         this._catalog = ensureElement<HTMLElement>('.gallery', this.container)
@@ -20,12 +20,12 @@ protected _wrapper: HTMLElement;
 
 
         this._basketButton.addEventListener('click', () => {
-            this.events.emit('basket:opened')
-          })
+            this.events.emit('ui:basket:opened')
+        })
 
     }
 
- 
+
 
     set counter(value: number) {
         this.setText(this._counter, String(value));
@@ -35,7 +35,7 @@ protected _wrapper: HTMLElement;
         this._catalog.replaceChildren(...items);
     }
 
-  
+
 
     set locked(value: boolean) {
         if (value) {

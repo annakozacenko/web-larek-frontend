@@ -16,27 +16,23 @@ export class ContactsFormUI extends FormUI {
         this._phoneInput = ensureElement<HTMLInputElement>('[name="phone"]', this.container);
         this._submitButton = ensureElement<HTMLButtonElement>('.modal__actions .button', this.container);
 
-        this._emailInput.required = true;
-        this._phoneInput.required = true;
+
 
         this._emailInput.addEventListener('input', () => this.checkInputValidity(this._emailInput));
         this._phoneInput.addEventListener('input', () => this.checkInputValidity(this._phoneInput));
         this._submitButton.addEventListener('click', this.onSubmit);
 
 
- 
+
         this.updateSubmitButtonState();
     }
 
- 
 
-    /**
-     * Проверка валидности конкретного поля.
-     */
     private checkInputValidity(inputElement: HTMLInputElement): void {
         let errorMessage = '';
 
-        if (!inputElement.validity.valid) {
+
+        if (inputElement.value.trim() == '') {
             if (inputElement.name === 'email' && inputElement.validity.valueMissing) {
                 errorMessage = 'Поле email не может быть пустым.';
             } else if (inputElement.name === 'phone' && inputElement.validity.valueMissing) {
@@ -50,9 +46,7 @@ export class ContactsFormUI extends FormUI {
         this.updateSubmitButtonState();
     }
 
-    /**
-     * Установка ошибки для конкретного поля.
-     */
+
     private setFieldError(inputElement: HTMLInputElement, errorMessage: string): void {
         const errorField = this._errorField;
         errorField.textContent = errorMessage;
@@ -64,17 +58,13 @@ export class ContactsFormUI extends FormUI {
         }
     }
 
-    /**
-     * Обновление состояния кнопки отправки.
-     */
+
     private updateSubmitButtonState(): void {
         const isFormValid = this._emailInput.validity.valid && this._phoneInput.validity.valid;
         this._submitButton.disabled = !isFormValid;
     }
 
-    /**
-     * Обработчик отправки формы.
-     */
+
     protected onSubmit = (evt: Event) => {
         evt.preventDefault();
 
@@ -88,9 +78,7 @@ export class ContactsFormUI extends FormUI {
         }
     };
 
-    /**
-     * Сброс состояния формы.
-     */
+
     reset(): void {
         this._emailInput.value = '';
         this._phoneInput.value = '';

@@ -24,7 +24,7 @@ export class FormUI extends Component {
 
     toggleButton(state: boolean) {
         this.setDisabled(this._button, !state);
-    
+
     }
 
     set valid(value: boolean) {

@@ -1,6 +1,6 @@
 
-import { createElement, ensureElement, formatNumber } from "../../utils/utils";
-import {  IEvents } from "../base/events";
+import { ensureElement, formatNumber } from "../../utils/utils";
+import { IEvents } from "../base/events";
 import { Component } from "./Component";
 
 
@@ -39,9 +39,9 @@ export class BasketUI extends Component {
         this.setText(this._total, formatNumber(total) + ' синапсов');
     }
 
-toggleButton(state: boolean) {
-    this.setDisabled(this._button, !state);
+    toggleButton(state: boolean) {
+        this.setDisabled(this._button, !state);
 
-}
+    }
 }
 

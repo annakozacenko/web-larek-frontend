@@ -11,6 +11,7 @@ export class Card extends Component {
     protected _category?: HTMLElement;
     protected _button?: HTMLButtonElement;
     protected _description?: HTMLElement;
+    protected _item?: IProduct;
 
 
     constructor(container: HTMLElement, protected events: IEvents) {

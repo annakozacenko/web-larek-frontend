@@ -7,19 +7,16 @@ export class OrderFormUI extends FormUI {
     protected _paymentButtonCash: HTMLButtonElement;
     protected _addressInput: HTMLInputElement;
     protected _paymentType: string = '';
-    protected _submitButton: HTMLButtonElement;
-    protected _errorField: HTMLElement;
+
 
 
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container, events);
 
-        this._errorField = ensureElement<HTMLElement>('.form__errors', this.container);
         this._paymentButtonCard = ensureElement<HTMLButtonElement>('[name="card"]', this.container);
         this._paymentButtonCash = ensureElement<HTMLButtonElement>('[name="cash"]', this.container);
         this._addressInput = ensureElement<HTMLInputElement>('.order__field input', this.container);
-        this._submitButton = ensureElement<HTMLButtonElement>('.order__button', this.container);
-
+ 
 
         this._paymentButtonCard.addEventListener('click', (evt) =>
             this.onPaymentButtonClick(evt, 'online', this._paymentButtonCard, this._paymentButtonCash)
@@ -32,7 +29,7 @@ export class OrderFormUI extends FormUI {
             this.checkAddressValidity()
         );
 
-        this._submitButton.addEventListener('click', this.onSubmit);
+        this._button.addEventListener('click', this.onSubmit);
 
         this.updateSubmitButtonState();
     }
@@ -54,15 +51,10 @@ export class OrderFormUI extends FormUI {
         const isAddressValid = this._addressInput.value.trim() !== '';
 
         if (isAddressValid) {
-            this.hideInputError(this._addressInput);
+            this.errors = '';
         } else {
-            this.showInputError(this._addressInput, 'Введите адрес доставки.');
+            this.errors = 'Введите адрес доставки.';
         }
-
-        this.events.emit('ui:orderForm:inputChange', {
-            address: this._addressInput.value.trim(),
-            paymentType: this._paymentType,
-        });
         this.updateSubmitButtonState();
     }
 
@@ -71,9 +63,9 @@ export class OrderFormUI extends FormUI {
         const isPaymentValid = this._paymentType !== '';
 
         if (isPaymentValid) {
-            this.hidePaymentError();
+            this.errors = '';
         } else {
-            this.showPaymentError('Выберите способ оплаты.');
+            this.errors = 'Выберите способ оплаты.';
         }
     }
 
@@ -99,28 +91,6 @@ export class OrderFormUI extends FormUI {
     }
 
 
-    protected showInputError(input: HTMLInputElement, errorMessage: string) {
-        this._errorField.textContent = errorMessage;
-        input.classList.add('input-error');
-    }
-
-
-    protected hideInputError(input: HTMLInputElement) {
-        this._errorField.textContent = '';
-        input.classList.remove('input-error');
-    }
-
-
-    protected showPaymentError(errorMessage: string) {
-        this._errorField.textContent = errorMessage;
-
-    }
-
-
-    protected hidePaymentError() {
-        this._errorField.textContent = '';
-
-    }
 
     protected switchButtons(activeButton: HTMLButtonElement, inactiveButton: HTMLButtonElement) {
         if (this._paymentType) {
@@ -134,17 +104,8 @@ export class OrderFormUI extends FormUI {
 
     updateSubmitButtonState() {
         const isFormValid = this.validate();
-        this._submitButton.disabled = !isFormValid;
+        this.valid = isFormValid;
     }
 
 
-    reset(): void {
-        this._paymentType = '';
-        this._addressInput.value = '';
-        this._errorField.textContent = '';
-        this._paymentButtonCard.classList.remove('button_alt-active', 'button-error');
-        this._paymentButtonCash.classList.remove('button_alt-active', 'button-error');
-        this._addressInput.classList.remove('input-error');
-        this.updateSubmitButtonState();
-    }
 }

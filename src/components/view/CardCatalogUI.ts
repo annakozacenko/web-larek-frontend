@@ -7,7 +7,6 @@ import { Card } from "./CardUI";
 
 
 export class CardCatalogUI extends Card {
-    _item: IProduct;
 
     constructor(container: HTMLElement, protected events: IEvents) {
         super(container, events);

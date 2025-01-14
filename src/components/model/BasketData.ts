@@ -2,9 +2,9 @@ import { IProduct } from "../../types";
 import { IEvents } from "../base/events";
 
 export class BasketData {
-    protected items: IProduct[] = [];
-    protected total: number;
-    protected amount: number;
+    protected _items: IProduct[] = [];
+    protected _total: number;
+    protected _amount: number;
 
 
     constructor(protected events: IEvents) {
@@ -12,30 +12,30 @@ export class BasketData {
     }
 
     addProduct(product: IProduct) {
-        this.items.push(product);
+        this._items.push(product);
         this.events.emit('model:basket:changed');
     };
     removeProduct(id: string) {
-        this.items = this.items.filter((item) => item.id !== id);
+        this._items = this._items.filter((item) => item.id !== id);
         this.events.emit('model:basket:changed');
     };
     clearBasket() {
-        this.items = [];
+        this._items = [];
         this.events.emit('model:basket:changed');
     };
-    get Items(): IProduct[] {
-        return this.items;
+    get items(): IProduct[] {
+        return this._items;
     };
 
-    get Total(): number {
-        return this.items.reduce((acc, item) => acc + item.price, 0);
+    get total(): number {
+        return this._items.reduce((acc, item) => acc + item.price, 0);
     };
-    get Amount(): number {
-        return this.items.length;
+    get amount(): number {
+        return this._items.length;
     };
 
     isProductInBasket(product: IProduct): boolean {
-        return this.items.some(item => item.id === product.id);
+        return this._items.some(item => item.id === product.id);
     }
 
 }

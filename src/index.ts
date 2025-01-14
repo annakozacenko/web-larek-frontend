@@ -71,7 +71,9 @@ productListApi.getProductListData()
 //Рендер каталога товаров
 events.on(`model:products:loaded`, () => {
     const elements = productData.items.map(item => {
-        const card = new CardCatalogUI(cloneTemplate(cardCatalogTemplate), events);
+        const card = new CardCatalogUI(cloneTemplate(cardCatalogTemplate), events, {
+            onClick: () => events.emit('ui:cardCatalog:clicked', item)
+        });
         return card.render(item);
     })
     page.catalog = elements;
@@ -80,17 +82,20 @@ events.on(`model:products:loaded`, () => {
 
 //Изменения в модели корзины - Изменение компонентов корзины и счетчика
 events.on('model:basket:changed', () => {
-    page.counter = basketData.Amount;
+    page.counter = basketData.amount;
     let index = 0;
-    const cardsInBasket = basketData.Items.map((item) => {
-        const cardInBasket = new CardBasketUI(cloneTemplate(cardBasketTemplate), events);
+    const cardsInBasket = basketData.items.map((item) => {
+        const cardInBasket = new CardBasketUI(cloneTemplate(cardBasketTemplate), events, {
+            onClick: () => events.emit('ui:cardDeleteButton:clicked', item)
+            
+        });
         cardInBasket.index = ++index;
         return cardInBasket.render(item);
     })
     basketComponent.items = cardsInBasket;
-    basketComponent.total = basketData.Total;
+    basketComponent.total = basketData.total;
 
-    if (basketData.Total === 0) {
+    if (basketData.total === 0) {
         basketComponent.toggleButton(false);
     } else {
         basketComponent.toggleButton(true);
@@ -136,21 +141,21 @@ events.on('ui:cardDeleteButton:clicked', (element: IProduct) => {
 
 //Подтверждение корзины
 events.on('ui:basket:confirmed', () => {
-    orderData.OrderItemsAndTotal = basketData.Items;
+    orderData.orderItemsAndTotal = basketData.items;
     modal.content = orderForm.render();
 
 });
 
 //Отправка заказа после заполнение формы заказа
 events.on('ui:orderForm:submit', (data: TIOrderPaymentAndaddress) => {
-    orderData.UserPaymentAndaddress = data;
+    orderData.userPaymentAndaddress = data;
     modal.content = contactsForm.render();
 });
 
 //Отправка заказа после заполнение формы контактов
 events.on('ui:contactsForm:submit', (data: TIOrderEmailAndPhone) => {
-    orderData.UserEmailAndPhone = data;
-    orderApi.setOrder(orderData.OrderInfo)
+    orderData.userEmailAndPhone = data;
+    orderApi.setOrder(orderData.orderInfo)
         .then((data) => {
             modal.content = successComponent.render({ value: data.total });
             basketData.clearBasket();

@@ -18,31 +18,31 @@ export class OrderData {
 
 
 
-    set OrderItemsAndTotal(items: IProduct[]) {
+    set orderItemsAndTotal(items: IProduct[]) {
         this._items = items.filter((item) => item.price > 0).map((item) => item.id);
         this._total = items.filter((item) => item.price > 0).reduce((acc, item) => acc + item.price, 0);
     }
 
 
-    set UserPaymentAndaddress(data: TIOrderPaymentAndaddress) {
+    set userPaymentAndaddress(data: TIOrderPaymentAndaddress) {
         this._payment = data.payment as PaymentMethod;
         this._address = data.address;
     }
 
 
-    get UserPaymentAndaddress(): TIOrderPaymentAndaddress {
+    get userPaymentAndaddress(): TIOrderPaymentAndaddress {
         return {
             payment: this._payment,
             address: this._address,
         };
     }
 
-    set UserEmailAndPhone(data: TIOrderEmailAndPhone) {
+    set userEmailAndPhone(data: TIOrderEmailAndPhone) {
         this._email = data.email;
         this._phone = data.phone;
     }
 
-    get UserEmailAndPhone(): TIOrderEmailAndPhone {
+    get userEmailAndPhone(): TIOrderEmailAndPhone {
         return {
             email: this._email,
             phone: this._phone,
@@ -51,7 +51,7 @@ export class OrderData {
 
 
 
-    get OrderInfo(): IOrder {
+    get orderInfo(): IOrder {
         return {
             items: this._items,
             payment: this._payment,

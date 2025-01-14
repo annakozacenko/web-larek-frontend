@@ -24,11 +24,22 @@ export class CardPreviewUI extends Card {
         this._button.textContent = status;
     }
 
-    render(card: IProduct): HTMLElement {
+    set category(value: string) {
+        this.setText(this._category, value)
+    }
 
-        this.setImage(this._image, card.image);
-        this._category.textContent = card.category;
-        this._description.textContent = card.description;
+    set image(value: string) {
+        this.setImage(this._image, value)
+    }
+
+    set description(value: string) {
+        this.setText(this._description, value)
+    }
+
+    render(card: IProduct): HTMLElement {
+        this.image = card.image;
+        this.category = card.category;
+        this.description = card.description;
 
         return super.render(card);
     }

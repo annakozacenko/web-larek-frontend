@@ -2,7 +2,7 @@ import { ProductData } from './components/model/ProductData';
 import './scss/styles.scss';
 import { OrderData } from './components/model/OrderData';
 import { BasketData } from './components/model/BasketData';
-import { OrderDataApi, ProductDataApi } from './components/ProductDataApi';
+import { OrderDataApi, ProductDataApi } from './components/DataApi';
 import { API_URL, CDN_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
 import { cloneTemplate, ensureElement } from './utils/utils';
@@ -81,8 +81,10 @@ events.on(`model:products:loaded`, () => {
 //Изменения в модели корзины - Изменение компонентов корзины и счетчика
 events.on('model:basket:changed', () => {
     page.counter = basketData.Amount;
-    const cardsInBasket = basketData.Items.map(item => {
+    let index = 0;
+    const cardsInBasket = basketData.Items.map((item) => {
         const cardInBasket = new CardBasketUI(cloneTemplate(cardBasketTemplate), events);
+        cardInBasket.index = ++index;
         return cardInBasket.render(item);
     })
     basketComponent.items = cardsInBasket;

@@ -27,6 +27,7 @@ export class OrderData {
     set userPaymentAndaddress(data: TIOrderPaymentAndaddress) {
         this._payment = data.payment as PaymentMethod;
         this._address = data.address;
+        this.events.emit('model:orderData:orderForm:update');
     }
 
 
@@ -40,6 +41,7 @@ export class OrderData {
     set userEmailAndPhone(data: TIOrderEmailAndPhone) {
         this._email = data.email;
         this._phone = data.phone;
+        this.events.emit('model:orderData:contactsForm:update');
     }
 
     get userEmailAndPhone(): TIOrderEmailAndPhone {
@@ -62,6 +64,46 @@ export class OrderData {
         };
     }
 
+
+
+
+ validateUserEmailAndPhone(): void {
+        const validationStatus:{errors: string, status: boolean} = {
+            errors: '',
+            status:true
+        }
+        if (!this._email) {
+            validationStatus.errors = ("Поле email не может быть пустым.");
+            validationStatus.status = false;
+        }
+
+        if (!this._phone) {
+            validationStatus.errors = ("Поле телефона не может быть пустым.");
+            validationStatus.status = false;
+        }
+
+        this.events.emit("model:orderData:contactsForm:validationErrors", validationStatus);
+    }
+
+
+    validateUserPaymentAndAddress(): void {
+        const validationStatus:{errors: string, status: boolean} = {
+            errors: '',
+            status:true
+        }
+
+        if (this._payment==null) {
+            validationStatus.errors = ("Выберите метод оплаты.");
+            validationStatus.status = false;
+        }
+
+        if (!this._address) {
+            validationStatus.errors = ("Введите адрес.");
+            validationStatus.status = false;
+        }
+
+        this.events.emit("model:orderData:orderForm:validationErrors", validationStatus);
+    }
 
 
 }

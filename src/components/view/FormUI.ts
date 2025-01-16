@@ -8,10 +8,6 @@ export class FormUI extends Component {
     protected _inputs: HTMLInputElement[];
 
 
-    addressInput: HTMLInputElement;
-    emailInput: HTMLInputElement;
-    phoneInput: HTMLInputElement;
-
 
     constructor(protected container: HTMLElement, protected events: IEvents) {
         super(container);

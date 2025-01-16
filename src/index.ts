@@ -146,15 +146,55 @@ events.on('ui:basket:confirmed', () => {
 
 });
 
-//Отправка заказа после заполнение формы заказа
-events.on('ui:orderForm:submit', (data: TIOrderPaymentAndaddress) => {
+
+
+
+//-----------
+
+// Обновляем отображение ошибок при вводе данных в форму
+events.on("ui:orderForm:update", (data:TIOrderPaymentAndaddress) => {
     orderData.userPaymentAndaddress = data;
+});
+
+// Проверка валидности полей при изменении данных пользователя
+events.on('model:orderData:orderForm:update', () => {
+    orderData.validateUserPaymentAndAddress();
+});
+
+// Обновляем отображение ошибок при вводе данных в форму
+events.on("model:orderData:orderForm:validationErrors", (validationStatus:{errors: string, status: boolean}) => {
+    orderForm.errors = validationStatus.errors;
+    orderForm.valid = validationStatus.status;
+}
+)
+
+//Отправка заказа после заполнение формы заказа
+events.on('ui:orderForm:submit', () => {
     modal.content = contactsForm.render();
 });
 
-//Отправка заказа после заполнение формы контактов
-events.on('ui:contactsForm:submit', (data: TIOrderEmailAndPhone) => {
+//-----------
+
+// Обновляем отображение ошибок при вводе данных в форму
+events.on("ui:contactsForm:update", (data:TIOrderEmailAndPhone) => {
     orderData.userEmailAndPhone = data;
+});
+
+// Проверка валидности полей при изменении данных пользователя
+events.on('model:orderData:contactsForm:update', () => {
+    orderData.validateUserEmailAndPhone();
+});
+
+// Обновляем отображение ошибок при вводе данных в форму
+events.on("model:orderData:contactsForm:validationErrors", (validationStatus:{errors: string, status: boolean}) => {
+    contactsForm.errors = validationStatus.errors;
+    contactsForm.valid = validationStatus.status;
+}
+)
+
+//Отправка заказа после заполнение формы контактов
+events.on('ui:contactsForm:submit', () => {
+
     orderApi.setOrder(orderData.orderInfo)
         .then((data) => {
             modal.content = successComponent.render({ value: data.total });
@@ -164,6 +204,7 @@ events.on('ui:contactsForm:submit', (data: TIOrderEmailAndPhone) => {
             console.error('Ошибка: ', err);
         });
 });
+
 
 
 

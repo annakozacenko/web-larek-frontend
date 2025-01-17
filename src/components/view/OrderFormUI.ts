@@ -28,7 +28,7 @@ export class OrderFormUI extends FormUI {
 
         this._addressInput.addEventListener('input', this.onInput);
 
-        this._button.addEventListener('click', this.onSubmit);
+        this._submitButton.addEventListener('click', this.onSubmit);
 
         this.valid = false;
     }

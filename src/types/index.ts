@@ -7,7 +7,7 @@ export interface IProduct {
     image: string;
     title: string;
     category: string;
-    price: number|null
+    price: number|null;
 }
 
 
@@ -31,6 +31,11 @@ export type TProductBasketInfo = Pick<IProduct, 'title' | 'price'>;
 
 export type TIOrderPaymentAndaddress = Pick<IOrder, 'payment' | 'address'>;
 export type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone'>;
+
+
+export interface ICardActions {
+    onClick: (event: MouseEvent) => void;
+}
 
 
 

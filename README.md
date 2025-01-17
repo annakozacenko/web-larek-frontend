@@ -99,6 +99,15 @@ type TIOrderPaymentAndaddress = Pick<IOrder, 'payment' | 'address' >;
 type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 ```
 
+### Тип, описывающий действия, доступные для карточки товара
+
+```typescript
+interface ICardActions {
+    onClick: (event: MouseEvent) => void;
+}
+```
+
+
 ## Архитектура приложения
 
 Архитектура приложения построена в соответствии с принципами MVP. Компоненты приложения разделены на следующие слои:
@@ -190,12 +199,14 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 
 **Методы**:
-- `set OrderItemsAndTotal(items: IProduct[])`: Сеттер для установки товаров в заказе и общей суммы заказа. Принимает массив объектов IProduct. Устанавливает значение полей _items и _total.
-- `set UserPaymentAndaddress(data: TIOrderPaymentAndaddress)`: Сеттер для установки данных о платеже и адресе пользователя. Принимает объект с данными типа TIOrderPaymentAndaddress. Устанавливает значение полей `_payment` и `_address`.
-- `get UserPaymentAndaddress()`: Геттер для получения данных о платеже и адресе.
-- `set UserEmailAndPhone(data: TIOrderEmailAndPhone)`: Сеттер для установки контактных данных пользователя. Принимает объект с данными типа TIOrderEmailAndPhone. Устанавливает значение полей `_email` и `_phone`.
-- `get UserEmailAndPhone()`: Геттер для получения контактных данных пользователя.
-- `get OrderInfo()`: Геттер для получения общей информации о заказе. Возвращает объект типа IOrder.
+- `set orderItemsAndTotal(items: IProduct[])`: Сеттер для установки товаров в заказе и общей суммы заказа. Принимает массив объектов IProduct. Устанавливает значение полей _items и _total.
+- `set userPaymentAndaddress(data: TIOrderPaymentAndaddress)`: Сеттер для установки данных о платеже и адресе пользователя. Принимает объект с данными типа TIOrderPaymentAndaddress. Устанавливает значение полей `_payment` и `_address`.
+- `get userPaymentAndaddress()`: Геттер для получения данных о платеже и адресе.
+- `set userEmailAndPhone(data: TIOrderEmailAndPhone)`: Сеттер для установки контактных данных пользователя. Принимает объект с данными типа TIOrderEmailAndPhone. Устанавливает значение полей `_email` и `_phone`.
+- `get userEmailAndPhone()`: Геттер для получения контактных данных пользователя.
+- `get orderInfo()`: Геттер для получения общей информации о заказе. Возвращает объект типа IOrder.
+- `validateUserEmailAndPhone()`: метод валидации email и phone. Генерирует событие `'model:orderData:contactsForm:validationErrors'`, в котором передается объект типа { errors: string, status: boolean }
+- `validateUserPaymentAndAddress()`: метод валидации payment и address. Генерирует событие `'model:orderData:orderForm:validationErrors'`, в котором передается объект типа { errors: string, status: boolean }
 
 #### Класс BasketData
 
@@ -206,18 +217,18 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 
 **Поля**:
-- `items: IProduct[]`: Массив товаров в корзине.
-- `total: number`: Общая сумма корзины, вычисляется динамически на основе товаров в корзине.
-- `amount: number`: Количество товаров в корзине, вычисляется динамически на основе количества товаров в массиве.
+- `_items: IProduct[]`: Массив товаров в корзине.
+- `_total: number`: Общая сумма корзины, вычисляется динамически на основе товаров в корзине.
+- `_amount: number`: Количество товаров в корзине, вычисляется динамически на основе количества товаров в массиве.
 
 
 **Методы**:
-- `addProduct(product: IProduct)`: Метод для добавления товара в корзину. Принимает объект IProduct и добавляет его в массив `items`. После добавления генерирует событие `'model:basket:changed'`.
-- `removeProduct(id: string)`: Метод для удаления товара из корзины по ID. Принимает строку id товара и удаляет его из массива `items`. После удаления генерирует событие `'model:basket:changed'`.
-- `clearBasket()`: Метод для очистки всей корзины. Очищает массив `items` и генерирует событие `'model:basket:changed'`.
-- `get Items()`: Геттер для получения списка всех товаров в корзине. Возвращает массив объектов IProduct.
-- `get Total()`: Геттер для получения общей суммы корзины. Рассчитывает сумму всех товаров в корзине, возвращает число.
-- `get Amount()`: Геттер для получения количества товаров в корзине. Возвращает число, равное количеству элементов в массиве `items`.
+- `addProduct(product: IProduct)`: Метод для добавления товара в корзину. Принимает объект IProduct и добавляет его в массив `_items`. После добавления генерирует событие `'model:basket:changed'`.
+- `removeProduct(id: string)`: Метод для удаления товара из корзины по ID. Принимает строку id товара и удаляет его из массива `_items`. После удаления генерирует событие `'model:basket:changed'`.
+- `clearBasket()`: Метод для очистки всей корзины. Очищает массив `_items` и генерирует событие `'model:basket:changed'`.
+- `get items()`: Геттер для получения списка всех товаров в корзине. Возвращает массив объектов IProduct.
+- `get total()`: Геттер для получения общей суммы корзины. Рассчитывает сумму всех товаров в корзине, возвращает число.
+- `get amount()`: Геттер для получения количества товаров в корзине. Возвращает число, равное количеству элементов в массиве `_items`.
 - `isProductInBasket(product: IProduct): boolean`: Метод для проверки наличия товара в корзине. Принимает объект IProduct и возвращает true, если товар уже есть в корзине, иначе false.
 
 ### Слой отображения
@@ -248,12 +259,14 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 - `_category?: HTMLElement`: (Необязательное) Элемент DOM для категории товара.
 - `_button?: HTMLButtonElement`: (Необязательное) Элемент DOM для кнопки (например, добавления в корзину).
 - `_description?: HTMLElement`: (Необязательное) Элемент DOM для описания товара.
-- `_item: IProduct`: Объект товара, связанный с карточкой.
 
 
 **Методы**:
 - `constructor(container: HTMLElement, events: IEvents)`: Конструктор, который инициализирует экземпляр компонента, находит элементы интерфейса для отображения названия и цены товара.
-- `render(card: IProduct)`: Метод для рендеринга данных карточки товара. Принимает объект IProduct, отображает название товара в элементе `_title` и цену товара в элементе `_price`. Если цена товара равна null, отображается текст 'Бесценно'. Возвращает элемент DOM, который содержит рендер компонента.
+- `title(value: string)`: Сеттер для установки названия. Принимает строку value и устанавливает ее в поле `_title`.
+- `price(value: number | null)`: Сеттер для установки цены. Принимает число value или null и устанавливает его в поле `_price`. Если цена товара равна null, отображается текст 'Бесценно'. 
+- `image(value: string)`: Сеттер для установки изображения. Принимает строку value и устанавливает ее в поле `_image`.
+- `render(card: IProduct)`: Метод для рендеринга данных карточки товара. Возвращает элемент DOM, который содержит рендер компонента.
 
 #### Класс CardBasketUI
 
@@ -264,9 +277,8 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 Класс состоит из следующих методов:
 **Методы**:
-- `constructor(container: HTMLElement, events: IEvents)`: Конструктор, который инициализирует экземпляр компонента, вызывает конструктор родительского класса Card, находит кнопку для удаления товара и добавляет обработчик события для этой кнопки, генерируя событие `'ui:cardDeleteButton:clicked'` с переданным товаром.
-- `render(card: IProduct)`: Метод для рендеринга карточки товара. Принимает объект IProduct, сохраняет его в поле `_item` и вызывает метод рендеринга родительского класса Card.
-- `index(value: number)`: Метод для установки индекса товара в корзине. Принимает число value и устанавливает его в поле `_index`.
+- `constructor(container: HTMLElement, events: IEvents, actions?: ICardActions)`: Конструктор, который инициализирует экземпляр компонента, вызывает конструктор родительского класса Card, находит кнопку для удаления товара и добавляет обработчик события `onClick` для этой кнопки.
+- `index(value: number)`: Сеттер для установки индекса товара в корзине. Принимает число value и устанавливает его в поле `_index`.
 
 #### Класс CardCatalogUI
 
@@ -274,8 +286,10 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 Класс состоит из следующих методов:
 **Методы**:
-- `constructor(container: HTMLElement, events: IEvents)`: Конструктор, который инициализирует экземпляр компонента, вызывает конструктор родительского класса Card, находит элементы для отображения изображения и категории товара. Также добавляет обработчик события для клика по карточке, который генерирует событие `'ui:cardCatalog:clicked'` с переданным объектом товара.
-- `render(card: IProduct)`: Метод для рендеринга карточки товара. Принимает объект IProduct, устанавливает изображение и категорию товара в соответствующие элементы, сохраняет объект товара в поле `_item` и вызывает метод рендеринга родительского класса Card.
+- `constructor(container: HTMLElement, events: IEvents, actions?: ICardActions)`: Конструктор, который инициализирует экземпляр компонента, вызывает конструктор родительского класса Card, находит элементы для отображения изображения и категории товара и добавляет обработчик события `onClick` для клика по карточке.
+- `category(value: string)`: Сеттер для установки категории товара. Принимает строку value и устанавливает ее в поле `_category`.
+
+
 
 #### Класс CardPreviewUI
 
@@ -286,7 +300,8 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 **Методы**:
 - `constructor(container: HTMLElement, events: IEvents)`: Конструктор, который инициализирует экземпляр компонента, вызывает конструктор родительского класса Card. Инициализирует элементы для изображения, категории, описания и кнопки. Добавляет обработчик события для кнопки, который генерирует событие `'ui:cardPreviewButton:clicked'` с текущим экземпляром карточки.
 - `toggleStatus(value: boolean)`: Метод для изменения текста на кнопке в зависимости от состояния. Принимает булевое значение value. Если true, кнопка отображает текст 'Убрать из корзины'; если false, — 'Добавить'.
-- `render(card: IProduct)`: Метод для рендеринга карточки товара. Принимает объект IProduct, устанавливает изображение, категорию и описание товара в соответствующие элементы, а затем вызывает метод рендеринга родительского класса Card.
+- `category(value: string)`: Сеттер для установки категории. Принимает строку value и устанавливает ее в поле `_category`.
+- `description(value: string)`: Сеттер для установки описания. Принимает строку value и устанавливает ее в поле `_description`.
 
 #### Класс FormUI
 
@@ -295,12 +310,8 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 Класс состоит из следующих полей и методов:
 
 **Поля**:
-- `_button: HTMLButtonElement`: Кнопка отправки формы.
+ - `_submitButton: HTMLButtonElement` : Кнопка отправки формы.
 - `_errors: HTMLElement`: Элемент для отображения сообщений об ошибках.
-- `_inputs: HTMLInputElement[]`: Список входных полей формы.
-- `addressInput: HTMLInputElement`: Поле ввода для адреса.
-- `emailInput: HTMLInputElement`: Поле ввода для электронной почты.
-- `phoneInput: HTMLInputElement`: Поле ввода для телефона.
 
 
 **Методы**:
@@ -315,16 +326,13 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 **Поля**:
  - `_emailInput: HTMLInputElement` : Поле ввода для email.
- - ` _phoneInput: HTMLInputElement` : Поле ввода для телефона.
+ - `_phoneInput: HTMLInputElement` : Поле ввода для телефона.
 
 
 **Методы**
- - `constructor(container: HTMLElement, events: IEvents)` : Инициализирует элементы формы, добавляет обработчики событий для полей ввода и кнопки отправки. Вызывает метод updateSubmitButtonState, чтобы установить начальное состояние кнопки.
- - `private onInput(): void` : Проверяет валидность всех полей при каждом вводе текста. Обновляет сообщение об ошибке и состояние кнопки отправки.
- - `private isInputValid(input: HTMLInputElement): boolean` : Проверяет валидность поля ввода. Возвращает true, если поле не пустое.
- - `private getValidationErrorMessage(): string` : Определяет текст сообщения об ошибке в зависимости от заполненности полей email и телефона.
- - `private updateSubmitButtonState(): void` : Проверяет, заполнены ли оба поля формы. Если да, активирует кнопку отправки. Если нет, деактивирует кнопку.
- - `onSubmit(evt: Event): void` : Обработчик события отправки формы. Предотвращает стандартное поведение браузера. Если форма валидна, генерирует событие с данными формы. Если невалидна, выводит предупреждение в консоль.
+ - `constructor(container: HTMLElement, events: IEvents)` : Инициализирует элементы формы, добавляет обработчики событий для полей ввода и кнопки отправки.
+ - `private onInput(): void` : Обработчик события ввода. Генерирует событие `'ui:contactsForm:update'` с данными формы.
+ - `onSubmit(evt: Event): void` : Обработчик события отправки формы. Предотвращает стандартное поведение браузера. Генерирует событие с данными формы `'ui:contactsForm:submit'`.
 
 
 #### Класс OrderFormUI
@@ -339,14 +347,12 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 
 **Методы**:
-- `constructor(container: HTMLElement, events: IEvents)`: Инициализирует элементы формы, добавляет обработчики событий для выбора способа оплаты, ввода адреса и отправки формы. Вызывает updateSubmitButtonState для управления состоянием кнопки отправки.
-- `onPaymentButtonClick(evt: Event, paymentType: string, clickedButton: HTMLButtonElement, otherButton: HTMLButtonElement)`: Обрабатывает выбор способа оплаты. Устанавливает или сбрасывает выбранный способ оплаты. Вызывает методы switchButtons, checkPaymentValidity, и updateSubmitButtonState.
-- `checkAddressValidity()`: Проверяет валидность адреса. Если адрес не валиден, устанавливает соответствующее сообщение об ошибке.
-- `checkPaymentValidity()`: Проверяет, выбран ли способ оплаты, устанавливая соответствующее сообщение об ошибке.
-- `onSubmit = (evt: Event)`: Обработчик отправки формы. Предотвращает стандартное поведение браузера. Генерирует событие `'ui:orderForm:submit'` с данными адреса и способа оплаты. 
-- `validate(): boolean`: Проверяет, заполнен ли адрес и выбран ли способ оплаты. Возвращает true, если оба условия выполнены.
+- `constructor(container: HTMLElement, events: IEvents)`: Инициализирует элементы формы, добавляет обработчики событий для выбора способа оплаты, ввода адреса и отправки формы. 
+- `onPaymentButtonClick(evt: Event, paymentType: string, clickedButton: HTMLButtonElement, otherButton: HTMLButtonElement)`: Обрабатывает выбор способа оплаты. Устанавливает или сбрасывает выбранный способ оплаты. Генерирует событие `'ui:orderForm:update'` с данными.
+ - `private onInput(): void` : Обработчик события ввода. Генерирует событие `'ui:orderForm:update'` с данными формы.
+- `onSubmit = (evt: Event)`: Обработчик отправки формы. Предотвращает стандартное поведение браузера. Генерирует событие `'ui:orderForm:submit'`.
 - `switchButtons(activeButton: HTMLButtonElement, inactiveButton: HTMLButtonElement)`: Активирует выбранную кнопку способа оплаты, добавляя класс button_alt-active, и деактивирует другую кнопку.
-- `updateSubmitButtonState()`: Проверяет валидность формы и активирует или деактивирует кнопку отправки в зависимости от результата.
+
 
 
 
@@ -398,11 +404,6 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 **Методы**:
 - `constructor(container: HTMLElement, events: IEvents)`: Инициализирует элементы интерфейса и добавляет обработчик на кнопку закрытия, который вызывает событие `'ui:successButton:pressed'`.
 - `render(data: { value: number })`: Отображает текст с информацией о списанной сумме в элементе _description.
-- `Параметр`: 
-- `data.value: number`: Сумма списанных “синапсов”.
-- `Возвращает результат выполнения метода render() родительского класса Component`.
-
-
 
 
 
@@ -431,6 +432,10 @@ type TIOrderEmailAndPhone = Pick<IOrder, 'email' | 'phone' >;
 
 - `model:products:loaded`: Загрузка списка товаров.
 - `model:basket:changed`: Изменение данных корзины.
+- `model:orderData:contactsForm:update`: Обновление данных контактов.
+- `model:orderData:orderForm:update`: Обновление данных заказа.
+- `model:orderData:contactsForm:validationErrors`: Валидация формы контактов.
+- `model:orderData:orderForm:validationErrors`: Валидация формы заказа.
 
 **События, возникающие при взаимодействии пользователя с интерфейсом (генерируются классами, отвечающими за представление)**
 

@@ -74,54 +74,52 @@ events.on(`model:products:loaded`, () => {
         const card = new CardCatalogUI(cloneTemplate(cardCatalogTemplate), events, {
             onClick: () => events.emit('ui:cardCatalog:clicked', item)
         });
-        return card.render(item);
+        return card.render({ ...item });
     })
     page.catalog = elements;
 });
 
 
+
 //Изменения в модели корзины - Изменение компонентов корзины и счетчика
 events.on('model:basket:changed', () => {
     page.counter = basketData.amount;
-    let index = 0;
-    const cardsInBasket = basketData.items.map((item) => {
+
+    const cardsInBasket = basketData.items.map((item, index) => {
         const cardInBasket = new CardBasketUI(cloneTemplate(cardBasketTemplate), events, {
             onClick: () => events.emit('ui:cardDeleteButton:clicked', item)
-            
         });
-        cardInBasket.index = ++index;
-        return cardInBasket.render(item);
-    })
+        cardInBasket.index = index + 1;
+        return cardInBasket.render({ ...item })
+    });
+
     basketComponent.items = cardsInBasket;
     basketComponent.total = basketData.total;
 
-    if (basketData.total === 0) {
-        basketComponent.toggleButton(false);
-    } else {
-        basketComponent.toggleButton(true);
-    }
+    basketComponent.toggleButton(basketData.total !== 0);
 });
 
 
 
+
 //Выбор товара в каталоге
-events.on(`ui:cardCatalog:clicked`, (item: IProduct) => {
+events.on('ui:cardCatalog:clicked', (item: IProduct) => {
     productData.selected = item;
     const isInBasket = basketData.isProductInBasket(item);
     cardPreview.toggleStatus(isInBasket);
-    modal.content = cardPreview.render(item);
+    modal.content = cardPreview.render({ ...item });
     modal.render();
 });
 
 
 //Нажатие на кнопку добавления в корзину - добавление или удаление из корзины
-events.on('ui:cardPreviewButton:clicked', (element: CardPreviewUI) => {
+events.on('ui:cardPreviewButton:clicked', () => {
     if (basketData.isProductInBasket(productData.selected)) {
         basketData.removeProduct(productData.selected.id);
-        element.toggleStatus(false);
+        cardPreview.toggleStatus(false);
     } else {
         basketData.addProduct(productData.selected);
-        element.toggleStatus(true);
+        cardPreview.toggleStatus(true);
     }
 });
 
@@ -151,8 +149,8 @@ events.on('ui:basket:confirmed', () => {
 
 //-----------
 
-// Обновляем отображение ошибок при вводе данных в форму
-events.on("ui:orderForm:update", (data:TIOrderPaymentAndaddress) => {
+// Обновляем отображение ошибок при вводе данных в форму заказа
+events.on("ui:orderForm:update", (data: TIOrderPaymentAndaddress) => {
     orderData.userPaymentAndaddress = data;
 });
 
@@ -162,7 +160,7 @@ events.on('model:orderData:orderForm:update', () => {
 });
 
 // Обновляем отображение ошибок при вводе данных в форму
-events.on("model:orderData:orderForm:validationErrors", (validationStatus:{errors: string, status: boolean}) => {
+events.on("model:orderData:orderForm:validationErrors", (validationStatus: { errors: string, status: boolean }) => {
     orderForm.errors = validationStatus.errors;
     orderForm.valid = validationStatus.status;
 }
@@ -175,8 +173,8 @@ events.on('ui:orderForm:submit', () => {
 
 //-----------
 
-// Обновляем отображение ошибок при вводе данных в форму
-events.on("ui:contactsForm:update", (data:TIOrderEmailAndPhone) => {
+// Обновляем отображение ошибок при вводе данных в форму контактов
+events.on("ui:contactsForm:update", (data: TIOrderEmailAndPhone) => {
     orderData.userEmailAndPhone = data;
 });
 
@@ -186,7 +184,7 @@ events.on('model:orderData:contactsForm:update', () => {
 });
 
 // Обновляем отображение ошибок при вводе данных в форму
-events.on("model:orderData:contactsForm:validationErrors", (validationStatus:{errors: string, status: boolean}) => {
+events.on("model:orderData:contactsForm:validationErrors", (validationStatus: { errors: string, status: boolean }) => {
     contactsForm.errors = validationStatus.errors;
     contactsForm.valid = validationStatus.status;
 }

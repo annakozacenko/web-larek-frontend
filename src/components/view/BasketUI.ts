@@ -19,11 +19,9 @@ export class BasketUI extends Component {
         this._total = ensureElement('.basket__price', this.container);
         this._button = ensureElement('.button', this.container) as HTMLButtonElement;
 
-        if (this._button) {
-            this._button.addEventListener('click', () => {
-                events.emit('ui:basket:confirmed');
-            });
-        }
+        this._button.addEventListener('click', () => {
+            events.emit('ui:basket:confirmed');
+        });
         this.items = [];
 
     }

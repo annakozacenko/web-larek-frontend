@@ -67,10 +67,10 @@ export class OrderData {
 
 
 
- validateUserEmailAndPhone(): void {
-        const validationStatus:{errors: string, status: boolean} = {
+    validateUserEmailAndPhone(): void {
+        const validationStatus: { errors: string, status: boolean } = {
             errors: '',
-            status:true
+            status: true
         }
         if (!this._email) {
             validationStatus.errors = ("Поле email не может быть пустым.");
@@ -87,12 +87,12 @@ export class OrderData {
 
 
     validateUserPaymentAndAddress(): void {
-        const validationStatus:{errors: string, status: boolean} = {
+        const validationStatus: { errors: string, status: boolean } = {
             errors: '',
-            status:true
+            status: true
         }
 
-        if (this._payment==null) {
+        if (this._payment == null) {
             validationStatus.errors = ("Выберите метод оплаты.");
             validationStatus.status = false;
         }

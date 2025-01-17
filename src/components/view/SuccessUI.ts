@@ -17,7 +17,7 @@ export class SuccessUI extends Component {
 	}
 
 	render(data: { value: number }) {
-		this._description.textContent = `Списано ${String(data.value)} синапсов`;
+		this.setText(this._description, `Списано ${String(data.value)} синапсов`);
 		return super.render();
 	}
 }

@@ -13,7 +13,6 @@ export class ContactsFormUI extends FormUI {
 
         this._emailInput = ensureElement<HTMLInputElement>('[name="email"]', this.container);
         this._phoneInput = ensureElement<HTMLInputElement>('[name="phone"]', this.container);
-        this._submitButton = ensureElement<HTMLButtonElement>('.modal__actions .button', this.container);
 
         this._emailInput.addEventListener('input', this.onInput);
         this._phoneInput.addEventListener('input', this.onInput);

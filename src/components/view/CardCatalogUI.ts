@@ -1,40 +1,27 @@
-
-import { IProduct } from "../../types";
+import { ICardActions } from "../../types";
+import { categories } from "../../utils/constants";
 import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/events";
-import { Card, ICardActions } from "./CardUI";
+import { Card } from "./CardUI";
 
 
 
 export class CardCatalogUI extends Card {
 
     constructor(container: HTMLElement, protected events: IEvents, actions?: ICardActions) {
-        super(container, events, actions);
+        super(container, events);
 
         this._image = ensureElement('.card__image', this.container) as HTMLImageElement;
         this._category = ensureElement('.card__category', this.container);
 
-
-        // this.container.addEventListener('click', () => {
-        //     this.events.emit('ui:cardCatalog:clicked', this._item);
-        // });
+        container.addEventListener('click', actions.onClick);
     }
 
     set category(value: string) {
         this.setText(this._category, value)
+        this.toggleClass(this._category, `card__category_${categories.get(value)}`, true)
     }
 
-    set image(value: string) {
-        this.setImage(this._image, value)
-    }
-
-    render(card: IProduct): HTMLElement {
-
-        this.image = card.image;
-        this.category = card.category;
-
-        return super.render(card);
-    }
 
 
 }

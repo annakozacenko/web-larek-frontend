@@ -3,28 +3,26 @@ import { IEvents } from "../base/events";
 import { Component } from "./Component";
 
 export class FormUI extends Component {
-    protected _button: HTMLButtonElement;
+    protected _submitButton: HTMLButtonElement;
     protected _errors: HTMLElement;
-    protected _inputs: HTMLInputElement[];
-
 
 
     constructor(protected container: HTMLElement, protected events: IEvents) {
         super(container);
 
-        this._button = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
+        this._submitButton = ensureElement<HTMLButtonElement>('.modal__actions .button', this.container);
         this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
 
 
     }
 
     toggleButton(state: boolean) {
-        this.setDisabled(this._button, !state);
+        this.setDisabled(this._submitButton, !state);
 
     }
 
     set valid(value: boolean) {
-        this._button.disabled = !value;
+        this._submitButton.disabled = !value;
     }
 
     set errors(value: string) {
